@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Wealth Management Chatbot</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
+        <script src="https://kit.fontawesome.com/d59e7c6dfc.js" crossorigin="anonymous"></script>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    </head>
+    <body>
+        <div class="container">
+            <!-- Header with logo and controls -->
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-chart-line" style="font-size: 24px; color: var(--primary-color);"></i>
+                    <h1>Wealth Management Assistant</h1>
+                </div>
+                <div class="header-controls">
+                    <button id="notifications-btn" class="ctrl-btn tooltip">
+                        <i class="fas fa-bell"></i>
+                        <span class="tooltip-text">Notifications</span>
+                    </button>
+                    <button id="settings-btn" class="ctrl-btn tooltip">
+                        <i class="fas fa-cog"></i>
+                        <span class="tooltip-text">Settings</span>
+                    </button>
+                    <button id="theme-btn" class="ctrl-btn tooltip">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon" style="display: none;"></i>
+                        <span class="tooltip-text">Toggle Theme</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick action buttons -->
+            <div class="quick-actions">
+                <button class="action-btn" data-action="portfolio">
+                    <i class="fas fa-chart-pie"></i>Portfolio
+                </button>
+                <button class="action-btn" data-action="advice">
+                    <i class="fas fa-lightbulb"></i>Financial Advice
+                </button>
+                <button class="action-btn" data-action="market">
+                    <i class="fas fa-globe"></i>Market Updates
+                </button>
+                <button class="action-btn" data-action="goals">
+                    <i class="fas fa-bullseye"></i>Financial Goals
+                </button>
+                <button class="action-btn" data-action="retirement">
+                    <i class="fas fa-umbrella-beach"></i>Retirement
+                </button>
+            </div>
+
+            <!-- Chat area with glassmorphism effect -->
+            <div class="chat-area">
+                <div id="chat-background"></div>
+                <div id="chat-messages"></div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <button class="scroll-indicator" id="scroll-down">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+
+            <!-- Chart container moved outside chat-area -->
+            <div class="chart-container hidden">
+                <canvas id="portfolio-chart"></canvas>
+            </div>
+
+            <!-- Glassmorphism input container -->
+            <div class="input-container">
+                <div class="input-box">
+                    <button id="emoji-btn" class="tooltip">
+                        <i class="far fa-smile"></i>
+                        <span class="tooltip-text">Emojis</span>
+                    </button>
+                    <input type="text" id="user-input" placeholder="Ask about budgeting, investments, or try quick actions above...">
+                    <div class="chat-tooltip" id="chat-tip">Try asking 'What investment strategies are right for me?'</div>
+                </div>
+                <div class="input-actions">
+                    <button id="attach-btn" class="input-btn tooltip">
+                        <i class="fas fa-paperclip"></i>
+                        <span class="tooltip-text">Attach File</span>
+                    </button>
+                    <button id="voice-btn" class="input-btn tooltip">
+                        <i class="fas fa-microphone"></i>
+                        <span class="tooltip-text">Voice Input</span>
+                    </button>
+                    <button id="send-btn" class="input-btn tooltip">
+                        <i class="fas fa-paper-plane"></i>
+                        <span class="tooltip-text">Send</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Emoji picker -->
+            <div class="emoji-picker" id="emoji-picker">
+                <div class="emoji-categories">
+                    <div class="emoji-category active">😀</div>
+                    <div class="emoji-category">❤️</div>
+                    <div class="emoji-category">🌍</div>
+                    <div class="emoji-category">🍔</div>
+                    <div class="emoji-category">⚽</div>
+                    <div class="emoji-category">💡</div>
+                </div>
+                <div class="emoji-list">
+                    <!-- Emojis will be added via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Notification panel -->
+            <div class="notification-panel" id="notification-panel">
+                <div class="notification-header">
+                    <div class="notification-title">Notifications</div>
+                    <button class="notification-close"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="notification-list">
+                    <div class="notification-item">
+                        <div class="notification-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="notification-content">
+                            <div class="notification-text">Your portfolio has grown 2.3% this week</div>
+                            <div class="notification-time">Just now</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon"><i class="fas fa-calendar"></i></div>
+                        <div class="notification-content">
+                            <div class="notification-text">Upcoming bill payment: Mortgage</div>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon"><i class="fas fa-exclamation-circle"></i></div>
+                        <div class="notification-content">
+                            <div class="notification-text">Stock alert: AAPL up 3.5%</div>
+                            <div class="notification-time">Yesterday</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Context menu -->
+            <div class="context-menu" id="context-menu">
+                <div class="context-menu-item" data-action="copy">
+                    <i class="fas fa-copy"></i>Copy
+                </div>
+                <div class="context-menu-item" data-action="save">
+                    <i class="fas fa-bookmark"></i>Save
+                </div>
+                <div class="context-menu-item" data-action="share">
+                    <i class="fas fa-share-alt"></i>Share
+                </div>
+            </div>
+
+            <!-- Blur overlay -->
+            <div class="blur-overlay" id="blur-overlay"></div>
+
+            <!-- Financial advice form with improved styling -->
+            <form id="finance-form" class="hidden">
+                <h2>Financial Profile</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="income">Annual Income</label>
+                        <input type="number" id="income" placeholder="$">
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" placeholder="Years">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="risk-profile">Risk Tolerance</label>
+                    <div class="custom-dropdown" id="risk-dropdown">
+                        <div class="dropdown-selected">
+                            <span>Select Risk Profile</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="low">Conservative (Low Risk)</div>
+                            <div class="dropdown-option" data-value="medium">Balanced (Medium Risk)</div>
+                            <div class="dropdown-option" data-value="high">Aggressive (High Risk)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="goals">Financial Goals</label>
+                    <textarea id="goals" rows="3" placeholder="Describe your financial goals"></textarea>
+                </div>
+                <button type="button" id="submit-finance">Get Personalized Advice</button>
+            </form>
+
+            <!-- Wealth insights panel (New Feature) -->
+            <div class="insights-panel hidden" id="insights-panel">
+                <div class="insights-header">
+                    <div class="insights-title">Your Wealth Insights</div>
+                    <button class="ctrl-btn" id="close-insights">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="insights-tabs">
+                    <div class="insights-tab active" data-tab="summary">Summary</div>
+                    <div class="insights-tab" data-tab="goals">Goals Progress</div>
+                    <div class="insights-tab" data-tab="recommendations">Recommendations</div>
+                </div>
+                <div class="insights-content active" data-content="summary">
+                    <div class="dashboard">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title">Net Worth</div>
+                                <div class="panel-icon"><i class="fas fa-wallet"></i></div>
+                            </div>
+                            <div class="panel-content">
+                                <div class="panel-value">$256,890</div>
+                                <div class="panel-label">+4.5% this month</div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title">Investments</div>
+                                <div class="panel-icon"><i class="fas fa-chart-line"></i></div>
+                            </div>
+                            <div class="panel-content">
+                                <div class="panel-value">$154,320</div>
+                                <div class="panel-label">60% of net worth</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="insights-content" data-content="goals">
+                    <div class="progress-tracker">
+                        <div class="panel-header">
+                            <div class="panel-title">Retirement</div>
+                            <div class="alert-badge">On Track</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 68%;"></div>
+                        </div>
+                        <div class="panel-label">$980,000 goal • 68% completed</div>
+                    </div>
+                    <div class="progress-tracker">
+                        <div class="panel-header">
+                            <div class="panel-title">Home Purchase</div>
+                            <div class="alert-badge">Action Needed</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%;"></div>
+                        </div>
+                        <div class="panel-label">$120,000 goal • 45% completed</div>
+                    </div>
+                </div>
+                <div class="insights-content" data-content="recommendations">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">Top Recommendation</div>
+                            <div class="panel-icon"><i class="fas fa-star"></i></div>
+                        </div>
+                        <div class="panel-content">
+                            <p>Increase retirement contributions by 3% to stay on track with your goals.</p>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">Tax Strategy</div>
+                            <div class="panel-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                        </div>
+                        <div class="panel-content">
+                            <p>Consider maximizing your IRA contributions before year end to reduce tax liability.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
